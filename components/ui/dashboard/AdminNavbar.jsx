@@ -100,7 +100,7 @@ const AdminNavbar = () => {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
               <span className="me-2">👤</span>
-              <span>{isClient ? (user?.username || '') : ''}</span>
+              <span>{isClient ? (user?.username || user?.user?.username || '') : ''}</span>
             </button>
             
             {isDropdownOpen && (
@@ -118,9 +118,9 @@ const AdminNavbar = () => {
                      borderRadius: '8px'
                    }}>
                 <div className="dropdown-header px-3 py-2">
-                  <strong>{isClient ? (user?.user.username || '') : ''}</strong>
+                  <strong>{isClient ? (user?.username || user?.user?.username || '') : ''}</strong>
                   <br />
-                  <small className="text-muted">{isClient ? (user?.user.email || '') : ''}</small>
+                  <small className="text-muted">{isClient ? (user?.email || user?.user?.email || '') : ''}</small>
                 </div>
                 <div className="dropdown-divider"></div>
                 <a className="dropdown-item px-3 py-2" href="#">

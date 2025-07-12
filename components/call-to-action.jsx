@@ -12,11 +12,11 @@ export default function CallToAction() {
               opportunities.
             </p>
             <div className="d-flex justify-content-center flex-column flex-sm-row gap-3">
-              <Link href="/contact" className="btn btn-outline-primary btn-lg px-5">
+              <Link href="/main/contact" className="btn btn-outline-primary btn-lg px-5">
                 <i className="bi bi-envelope me-2"></i>
                 Get In Touch
               </Link>
-              <Link href="/projects" className="btn btn-outline-primary btn-lg px-5">
+              <Link href="/main/projects" className="btn btn-outline-primary btn-lg px-5">
                 <i className="bi bi-folder me-2"></i>
                 View My Work
               </Link>

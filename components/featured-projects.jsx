@@ -102,7 +102,7 @@ export default function FeaturedProjects() {
         )}
 
         <div className="text-center">
-          <Link href="/projects" className="btn btn-outline-primary btn-lg">
+          <Link href="/main/projects" className="btn btn-outline-primary btn-lg">
             View All Projects <i className="bi bi-arrow-right ms-2"></i>
           </Link>
         </div>
