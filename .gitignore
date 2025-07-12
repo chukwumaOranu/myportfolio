@@ -1,0 +1,38 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files
+.env.local
+.env.example
+
+# Backend environment files (contain secrets)
+server/.env
+server/.env.local
+
+# Note: .env.development and .env.production are committed to git
+# .env.local contains personal overrides only
+
+# Exclude entire server directory (backend is deployed separately)
+server/
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
