@@ -19,13 +19,17 @@ export function middleware(request) {
   console.log('Middleware - Path:', path);
   console.log('Middleware - Token exists:', !!token);
   console.log('Middleware - Is public path:', isPublicPath);
+  console.log('Middleware - Environment:', process.env.NODE_ENV);
 
   // If accessing public paths (login/register) and has valid token, redirect to dashboard
   if (isPublicPath && token) {
     const decoded = decodeToken(token);
+    console.log('Middleware - Token decoded:', decoded);
     if (decoded && decoded.exp * 1000 > Date.now()) {
       console.log('Middleware - Redirecting from public path to dashboard');
       return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+    } else {
+      console.log('Middleware - Token invalid or expired');
     }
   }
 

@@ -128,13 +128,20 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {
+        console.log('Login fulfilled - payload:', action.payload);
         state.loading = false;
         state.isAuthenticated = true;
         state.user = action.payload.user || action.payload;
 
+        console.log('Login fulfilled - updated state:', {
+          isAuthenticated: state.isAuthenticated,
+          user: state.user
+        });
+
         // Persist user to localStorage
         if (typeof window !== 'undefined') {
           localStorage.setItem('user', JSON.stringify(action.payload.user || action.payload));
+          console.log('User saved to localStorage');
         }
       })
       .addCase(login.rejected, (state, action) => {

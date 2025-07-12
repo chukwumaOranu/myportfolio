@@ -21,9 +21,46 @@ export default function AdminLogin() {
     
     if (isAuthenticated) {
       console.log('Redirecting to dashboard...');
-      router.replace('/admin/dashboard');
+      // Try router.push first
+      try {
+        router.push('/admin/dashboard');
+      } catch (error) {
+        console.error('Router push failed:', error);
+        // Fallback to window.location
+        window.location.href = '/admin/dashboard';
+      }
     }
   }, [isAuthenticated, router]);
+
+  // Additional effect to handle successful login
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      console.log('User authenticated, ensuring redirect...');
+      // Double-check redirect after a short delay
+      setTimeout(() => {
+        if (window.location.pathname === '/admin/login') {
+          console.log('Still on login page, forcing redirect...');
+          window.location.href = '/admin/dashboard';
+        }
+      }, 500);
+    }
+  }, [isAuthenticated, user]);
+
+  // Fallback: Check for token cookie directly
+  useEffect(() => {
+    const checkTokenCookie = () => {
+      const cookies = document.cookie.split(';');
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('token='));
+      if (tokenCookie) {
+        console.log('Token cookie found, redirecting...');
+        window.location.href = '/admin/dashboard';
+      }
+    };
+
+    // Check after a delay to allow cookie to be set
+    const timer = setTimeout(checkTokenCookie, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Clear error when component unmounts
   useEffect(() => {
