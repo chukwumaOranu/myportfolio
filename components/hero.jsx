@@ -48,11 +48,11 @@ export default function Hero() {
                 {isMounted && (profile?.profession) ? profile.profession : defaultProfession}
               </p>
               <div className="d-flex flex-column flex-sm-row gap-3 mb-5">
-                <Link href="/projects" className="btn btn-outline-primary btn-lg px-4 py-3">
+                <Link href="/main/projects" className="btn btn-outline-primary btn-lg px-4 py-3">
                   <i className="bi bi-folder me-2"></i>
                   View My Work
                 </Link>
-                <Link href="/contact" className="btn btn-outline-primary btn-lg px-4 py-3">
+                <Link href="/main/contact" className="btn btn-outline-primary btn-lg px-4 py-3">
                   <i className="bi bi-envelope me-2"></i>
                   Let's Talk
                 </Link>

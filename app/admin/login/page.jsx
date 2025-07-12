@@ -12,11 +12,15 @@ export default function AdminLogin() {
   const [errors, setErrors] = useState({});
   const router = useRouter();
   const dispatch = useDispatch();
-  const { error, loading, isAuthenticated } = useSelector((state) => state.auth);
+  const { error, loading, isAuthenticated, user } = useSelector((state) => state.auth);
 
   // Redirect if already authenticated
   useEffect(() => {
+    console.log('Login component - isAuthenticated:', isAuthenticated);
+    console.log('Login component - user:', user);
+    
     if (isAuthenticated) {
+      console.log('Redirecting to dashboard...');
       router.replace('/admin/dashboard');
     }
   }, [isAuthenticated, router]);
@@ -41,12 +45,8 @@ export default function AdminLogin() {
     if (!validateForm()) return;
 
     try {
-      const result = await dispatch(login(formData)).unwrap();
-      if (result.redirect) {
-        router.replace(result.redirect);
-      } else {
-        router.replace('/admin/dashboard');
-      }
+      await dispatch(login(formData)).unwrap();
+      // The useEffect will handle the redirect when isAuthenticated becomes true
     } catch (err) {
       console.error('Login failed:', err);
     }

@@ -9,6 +9,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true, // 👈 VERY IMPORTANT: send HttpOnly cookies
+  timeout: 30000, // 30 seconds timeout for mobile networks
 });
 
 // Request interceptor (optional logging)

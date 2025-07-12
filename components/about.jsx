@@ -106,7 +106,7 @@ export default function About() {
                 <p className="text-muted mb-4">
                   Let's turn your vision into reality. I'm always excited to work on new projects and bring fresh ideas to life.
                 </p>
-                <a href="#contact" className="btn btn-outline-primary btn-lg px-4 py-2">
+                <a href="/main/contact" className="btn btn-outline-primary btn-lg px-4 py-2">
                   <i className="bi bi-envelope me-2"></i>
                   Let's Talk
                 </a>
