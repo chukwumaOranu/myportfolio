@@ -1,24 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '@/app/services/api';
 
-// Helper to get user from localStorage (optional, for persistence on refresh)
-const getStoredUser = () => {
-  if (typeof window !== 'undefined') {
-    try {
-      const user = localStorage.getItem('user');
-      if (!user || user.trim() === '') {
-        localStorage.removeItem('user');
-        return null;
-      }
-      return JSON.parse(user);
-    } catch {
-      localStorage.removeItem('user');
-      return null;
-    }
-  }
-  return null;
-};
-
 // Async thunk to login user
 export const login = createAsyncThunk(
   'auth/login',
@@ -36,7 +18,7 @@ export const login = createAsyncThunk(
       }
 
       // Return both user and redirect
-      return data.data;  // 👈 Fix here
+      return data.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message || 'Login failed.';
       return rejectWithValue(errorMessage);
@@ -76,12 +58,6 @@ export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
-      // Clear localStorage immediately
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('user');
-        localStorage.removeItem('tokenExpiry');
-      }
-
       // Try to call the logout API
       const response = await api.post('/api/users/logout');
       const data = response.data;
@@ -93,12 +69,6 @@ export const logout = createAsyncThunk(
       // Backend clears HttpOnly cookie automatically
       return true;
     } catch (error) {
-      // Even if API call fails, we still want to clear local state
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('user');
-        localStorage.removeItem('tokenExpiry');
-      }
-      
       const errorMessage = error.response?.data?.message || error.message || 'Logout failed.';
       return rejectWithValue(errorMessage);
     }
@@ -106,8 +76,8 @@ export const logout = createAsyncThunk(
 );
 
 const initialState = {
-  user: getStoredUser(),
-  isAuthenticated: !!getStoredUser(),
+  user: null,
+  isAuthenticated: false,
   loading: false,
   error: null,
 };
@@ -128,21 +98,9 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {
-        console.log('Login fulfilled - payload:', action.payload);
         state.loading = false;
         state.isAuthenticated = true;
         state.user = action.payload.user || action.payload;
-
-        console.log('Login fulfilled - updated state:', {
-          isAuthenticated: state.isAuthenticated,
-          user: state.user
-        });
-
-        // Persist user to localStorage
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('user', JSON.stringify(action.payload.user || action.payload));
-          console.log('User saved to localStorage');
-        }
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -158,11 +116,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.isAuthenticated = true;
         state.user = action.payload.user || action.payload;
-
-        // Persist user to localStorage
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('user', JSON.stringify(action.payload.user || action.payload));
-        }
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
@@ -178,10 +131,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.isAuthenticated = false;
         state.user = null;
-
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('user');
-        }
       })
       .addCase(logout.rejected, (state, action) => {
         state.loading = false;
@@ -189,11 +138,6 @@ const authSlice = createSlice({
         // Clear user state even if logout API fails
         state.isAuthenticated = false;
         state.user = null;
-
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('user');
-          localStorage.removeItem('tokenExpiry');
-        }
       });
   },
 });

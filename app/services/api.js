@@ -32,12 +32,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response) {
       const { status } = error.response;
-
-      // Handle unauthorized errors (401)
-      if (status === 401 && typeof window !== 'undefined') {
-        localStorage.removeItem('user');
-        window.location.href = '/admin/login'; // Redirect to login
-      }
+      console.log('API Error:', status, error.response.data);
     }
     return Promise.reject(error);
   }

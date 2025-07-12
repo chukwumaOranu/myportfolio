@@ -11,7 +11,9 @@ function decodeToken(token) {
 export function middleware(request) {
   const path = request.nextUrl.pathname;
   
-  const isPublicPath = path === '/admin/login' || path === '/admin/register';
+  // Define public paths that don't require authentication
+  const publicPaths = ['/admin/login', '/admin/register'];
+  const isPublicPath = publicPaths.includes(path);
 
   // Check for token cookie
   const token = request.cookies.get('token')?.value;
@@ -19,23 +21,25 @@ export function middleware(request) {
   console.log('Middleware - Path:', path);
   console.log('Middleware - Token exists:', !!token);
   console.log('Middleware - Is public path:', isPublicPath);
-  console.log('Middleware - Environment:', process.env.NODE_ENV);
 
   // If accessing public paths (login/register) and has valid token, redirect to dashboard
   if (isPublicPath && token) {
     const decoded = decodeToken(token);
-    console.log('Middleware - Token decoded:', decoded);
     if (decoded && decoded.exp * 1000 > Date.now()) {
-      console.log('Middleware - Redirecting from public path to dashboard');
+      console.log('Middleware - Valid token on public path, redirecting to dashboard');
       return NextResponse.redirect(new URL('/admin/dashboard', request.url));
     } else {
-      console.log('Middleware - Token invalid or expired');
+      console.log('Middleware - Invalid/expired token on public path, clearing cookie');
+      // Clear invalid token
+      const response = NextResponse.next();
+      response.cookies.delete('token');
+      return response;
     }
   }
 
   // If accessing protected paths and no token, redirect to login
   if (!isPublicPath && !token) {
-    console.log('Middleware - No token, redirecting to login');
+    console.log('Middleware - No token on protected path, redirecting to login');
     return NextResponse.redirect(new URL('/admin/login', request.url));
   }
 
@@ -43,8 +47,10 @@ export function middleware(request) {
   if (!isPublicPath && token) {
     const decoded = decodeToken(token);
     if (!decoded || decoded.exp * 1000 < Date.now()) {
-      console.log('Middleware - Token invalid/expired, redirecting to login');
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+      console.log('Middleware - Invalid/expired token on protected path, redirecting to login');
+      const response = NextResponse.redirect(new URL('/admin/login', request.url));
+      response.cookies.delete('token');
+      return response;
     }
   }
 
@@ -53,5 +59,9 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/admin/login', '/admin/register'],
+  matcher: [
+    '/admin/login',
+    '/admin/register', 
+    '/admin/dashboard/:path*'
+  ],
 };

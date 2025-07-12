@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, clearError } from '@/app/store/slices/authSlice';
 import Link from 'next/link';
@@ -10,57 +9,8 @@ import { FaUser, FaLock } from 'react-icons/fa';
 export default function AdminLogin() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [errors, setErrors] = useState({});
-  const router = useRouter();
   const dispatch = useDispatch();
-  const { error, loading, isAuthenticated, user } = useSelector((state) => state.auth);
-
-  // Redirect if already authenticated
-  useEffect(() => {
-    console.log('Login component - isAuthenticated:', isAuthenticated);
-    console.log('Login component - user:', user);
-    
-    if (isAuthenticated) {
-      console.log('Redirecting to dashboard...');
-      // Try router.push first
-      try {
-        router.push('/admin/dashboard');
-      } catch (error) {
-        console.error('Router push failed:', error);
-        // Fallback to window.location
-        window.location.href = '/admin/dashboard';
-      }
-    }
-  }, [isAuthenticated, router]);
-
-  // Additional effect to handle successful login
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      console.log('User authenticated, ensuring redirect...');
-      // Double-check redirect after a short delay
-      setTimeout(() => {
-        if (window.location.pathname === '/admin/login') {
-          console.log('Still on login page, forcing redirect...');
-          window.location.href = '/admin/dashboard';
-        }
-      }, 500);
-    }
-  }, [isAuthenticated, user]);
-
-  // Fallback: Check for token cookie directly
-  useEffect(() => {
-    const checkTokenCookie = () => {
-      const cookies = document.cookie.split(';');
-      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('token='));
-      if (tokenCookie) {
-        console.log('Token cookie found, redirecting...');
-        window.location.href = '/admin/dashboard';
-      }
-    };
-
-    // Check after a delay to allow cookie to be set
-    const timer = setTimeout(checkTokenCookie, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  const { error, loading } = useSelector((state) => state.auth);
 
   // Clear error when component unmounts
   useEffect(() => {
@@ -83,7 +33,9 @@ export default function AdminLogin() {
 
     try {
       await dispatch(login(formData)).unwrap();
-      // The useEffect will handle the redirect when isAuthenticated becomes true
+      // Let the middleware handle the redirect
+      console.log('Login successful, redirecting...');
+      window.location.href = '/admin/dashboard';
     } catch (err) {
       console.error('Login failed:', err);
     }
