@@ -2,43 +2,44 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { getAuthToken, isTokenExpired, clearAuthToken } from '@/utils/auth';
+import { clearAuth } from '@/app/store/slices/authSlice';
+import { jwtDecode } from 'jwt-decode';
 
 export default function ProtectedRoute({ children }) {
   const router = useRouter();
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
-  const [isChecking, setIsChecking] = useState(true);
+  const dispatch = useDispatch();
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    console.log('ProtectedRoute - isAuthenticated:', isAuthenticated);
-    console.log('ProtectedRoute - user:', user);
-    
-    if (!isAuthenticated) {
-      console.log('ProtectedRoute - Redirecting to login...');
-      router.push('/admin/login');
-    } else {
-      console.log('ProtectedRoute - User authenticated, allowing access');
+    setIsClient(true);
+    const token = getAuthToken();
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        if (decoded.exp) {
+          const expDate = new Date(decoded.exp * 1000);
+          console.log('Token expires at:', expDate.toLocaleString());
+        }
+      } catch (e) {
+        // ignore
+      }
     }
-    
-    setIsChecking(false);
-  }, [isAuthenticated, router, user]);
+    if (!token || isTokenExpired(token)) {
+      clearAuthToken();
+      dispatch(clearAuth());
+      router.replace('/admin/login');
+    }
+  }, [router, dispatch]);
 
-  // Show loading while checking auth
-  if (isChecking) {
-    return (
-      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
+  if (!isClient) {
+    return null; // Prevent hydration mismatch
   }
 
-  // If not authenticated, show nothing (will redirect)
-  if (!isAuthenticated) {
+  if (!getAuthToken() || isTokenExpired(getAuthToken())) {
     return null;
   }
 
-  // If authenticated, render children
-  return children;
+  return <>{children}</>;
 } 

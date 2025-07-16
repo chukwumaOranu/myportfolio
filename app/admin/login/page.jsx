@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, clearError } from '@/app/store/slices/authSlice';
 import Link from 'next/link';
@@ -9,8 +10,14 @@ import { FaUser, FaLock } from 'react-icons/fa';
 export default function AdminLogin() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [errors, setErrors] = useState({});
+  const router = useRouter();
   const dispatch = useDispatch();
   const { error, loading } = useSelector((state) => state.auth);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Clear error when component unmounts
   useEffect(() => {
@@ -33,9 +40,8 @@ export default function AdminLogin() {
 
     try {
       await dispatch(login(formData)).unwrap();
-      // Let the middleware handle the redirect
       console.log('Login successful, redirecting...');
-      window.location.href = '/admin/dashboard';
+      router.push('/admin/dashboard');
     } catch (err) {
       console.error('Login failed:', err);
     }
@@ -61,7 +67,7 @@ export default function AdminLogin() {
                 <h4 className="mb-0">Oranu Portfolio Admin Login</h4>
               </div>
               <div className="card-body p-4">
-                {error && (
+                {isClient && error && (
                   <div className="alert alert-danger alert-dismissible fade show" role="alert">
                     {error}
                     <button 

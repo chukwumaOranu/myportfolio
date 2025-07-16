@@ -6,22 +6,18 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await api.post('/api/users/login', {
-        username: credentials.username,
-        password: credentials.password,
-      });
-
+      const response = await api.post('/api/users/login', credentials);
       const data = response.data;
-
-      if (!data.success || !data.data?.user) {
+      if (!data.success || !data.data?.user || !data.data?.token) {
         return rejectWithValue(data.message || 'Login failed');
       }
-
-      // Return both user and redirect
+      // Save token to localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('token', data.data.token);
+      }
       return data.data;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || 'Login failed.';
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(error.response?.data?.message || 'Login failed');
     }
   }
 );
@@ -31,24 +27,18 @@ export const register = createAsyncThunk(
   'auth/register',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await api.post('/api/users/register', {
-        username: userData.username,
-        email: userData.email,
-        password: userData.password,
-        confirmPassword: userData.confirmPassword,
-      });
-
+      const response = await api.post('/api/users/register', userData);
       const data = response.data;
-
-      if (!data.success) {
+      if (!data.success || !data.data?.user || !data.data?.token) {
         return rejectWithValue(data.message || 'Registration failed');
       }
-
-      // Return the registered user data
+      // Save token to localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('token', data.data.token);
+      }
       return data.data;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || 'Registration failed.';
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(error.response?.data?.message || 'Registration failed');
     }
   }
 );
@@ -61,16 +51,17 @@ export const logout = createAsyncThunk(
       // Try to call the logout API
       const response = await api.post('/api/users/logout');
       const data = response.data;
-
       if (!data.success) {
         return rejectWithValue('Logout failed');
       }
-
       // Backend clears HttpOnly cookie automatically
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
       return true;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || 'Logout failed.';
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(error.response?.data?.message || 'Logout failed');
     }
   }
 );
@@ -89,6 +80,10 @@ const authSlice = createSlice({
     clearError(state) {
       state.error = null;
     },
+    clearAuth(state) {
+      state.user = null;
+      state.isAuthenticated = false;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -135,12 +130,11 @@ const authSlice = createSlice({
       .addCase(logout.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        // Clear user state even if logout API fails
         state.isAuthenticated = false;
         state.user = null;
       });
   },
 });
 
-export const { clearError } = authSlice.actions;
+export const { clearError, clearAuth } = authSlice.actions;
 export default authSlice.reducer;

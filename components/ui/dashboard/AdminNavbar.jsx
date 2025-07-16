@@ -13,8 +13,6 @@ const AdminNavbar = () => {
   const { user } = useSelector((state) => state.auth);
   const dropdownRef = useRef(null);
 
-  console.log(user)
-
   // Prevent hydration mismatch by only rendering user data on client
   useEffect(() => {
     setIsClient(true);

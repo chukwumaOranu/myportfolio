@@ -132,7 +132,7 @@ const contactSlice = createSlice({
       .addCase(getContactForms.fulfilled, (state, action) => {
         state.loading = false;
         state.forms = action.payload.forms;
-        state.success = action.payload.success;
+        // Do not set state.success here for GET requests
       })
       .addCase(getContactForms.rejected, (state, action) => {
         state.loading = false;

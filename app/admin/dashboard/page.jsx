@@ -6,6 +6,8 @@ import { getCountUsers } from '@/app/store/slices/userSlice';
 import { getContactStats } from '@/app/store/slices/contactSlice';
 import { getCountProfiles } from '@/app/store/slices/profileSlice';
 import { getProfile } from '@/app/store/slices/userSlice';
+import { getContactForms } from '@/app/store/slices/contactSlice';
+import Link from "next/link";
 
 const DashboardPage = () => {
   const [isClient, setIsClient] = useState(false);
@@ -27,12 +29,12 @@ const DashboardPage = () => {
     dispatch(getCountUsers());
     dispatch(getContactStats());
     dispatch(getCountProfiles());
-    
-    // Fetch current user profile if authenticated
-    if (isAuthenticated) {
-      dispatch(getProfile());
+    dispatch(getContactForms());
+    // Fetch current user profile if authenticated and user id exists
+    if (isAuthenticated && user && user.id) {
+      dispatch(getProfile(user.id));
     }
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch, isAuthenticated, user]);
   
   const stats = {
     users: usersLoading ? '...' : userCount ?? 0,
@@ -115,10 +117,10 @@ const DashboardPage = () => {
                   <span className="me-2">➕</span>
                   Add New User
                 </button>
-                <button className="btn btn-outline-success">
+                <Link href="/admin/dashboard/contacts" className="btn btn-outline-success">
                   <span className="me-2">📧</span>
                   View Messages
-                </button>
+                </Link>
                 <button className="btn btn-outline-info">
                   <span className="me-2">📊</span>
                   View Reports

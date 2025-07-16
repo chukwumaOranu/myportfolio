@@ -18,6 +18,10 @@ export default function FeaturedProjects() {
     dispatch(fetchPublicProjects())
   }, [dispatch])
 
+  if (!isMounted) {
+    return null; // Prevent hydration mismatch
+  }
+
   // Get featured projects (first 3 projects)
   const featuredProjects = projects.slice(0, 3)
 

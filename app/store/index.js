@@ -34,7 +34,7 @@ const storage = typeof window !== 'undefined'
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth','users','profiles'] // only these reducerswill be persisted
+  whitelist: ['auth','users','profiles','contact','profileCase','projects','projectCase','technology','technologyCase'] // only these reducerswill be persisted
 };
 
 const rootReducer = combineReducers({
