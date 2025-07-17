@@ -77,7 +77,7 @@ export default function Hero() {
                 <div className="hero-decoration-1"></div>
                 <div className="hero-decoration-2"></div>
                 {!isMounted || loading ? (
-                  <div className="hero-image-placeholder d-flex align-items-center justify-content-center bg-light rounded-3 shadow-lg" style={{ width: '500px', height: '500px' }}>
+                  <div className="hero-image-placeholder d-flex align-items-center justify-content-center bg-light rounded-3 shadow-lg" style={{ maxWidth: '100%', width: '100%', height: 'auto', aspectRatio: '1/1', minHeight: '250px' }}>
                     <div className="spinner-border text-primary" role="status">
                       <span className="visually-hidden">Loading...</span>
                     </div>
@@ -89,6 +89,7 @@ export default function Hero() {
                     height={500}
                     alt={`${profile.fullName || profile.full_name} - Full Stack Developer`}
                     className="hero-image img-fluid rounded-3 shadow-lg"
+                    style={{ maxWidth: '100%', height: 'auto' }}
                     priority
                   />
                 ) : (
@@ -98,6 +99,7 @@ export default function Hero() {
                     height={500}
                     alt="Profile Placeholder"
                     className="hero-image img-fluid rounded-3 shadow-lg"
+                    style={{ maxWidth: '100%', height: 'auto' }}
                     priority
                   />
                 )}

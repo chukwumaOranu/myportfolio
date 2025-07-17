@@ -1,12 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const AdminSideBar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+const AdminSideBar = ({ isCollapsed, setIsCollapsed }) => {
   const pathname = usePathname();
+
+  // Check if device is mobile on mount
+  useEffect(() => {
+    const checkMobile = () => {
+      if (window.innerWidth < 768) {
+        setIsCollapsed(true);
+      }
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [setIsCollapsed]);
 
   const menuItems = [
     {
@@ -55,7 +68,7 @@ const AdminSideBar = () => {
       
       <div className="d-flex align-items-center justify-content-between p-3 border-bottom border-secondary">
         {!isCollapsed && (
-          <h5 className="mb-0 text-white">Admin Panel</h5>
+          <h5 className="mb-0 text-white d-none d-md-block">Admin Panel</h5>
         )}
         <button 
           className="btn btn-outline-light btn-sm"
@@ -79,6 +92,7 @@ const AdminSideBar = () => {
                   textDecoration: 'none',
                   transition: 'background-color 0.2s ease'
                 }}
+                title={isCollapsed ? item.name : ''}
               >
                 <span className="me-2" style={{ fontSize: '1.2rem' }}>
                   {item.icon}
@@ -92,7 +106,7 @@ const AdminSideBar = () => {
 
       <div className="mt-auto p-3 border-top border-secondary">
         {!isCollapsed && (
-          <div className="text-center">
+          <div className="text-center d-none d-md-block">
             <small className="text-muted">Admin Panel v1.0</small>
           </div>
         )}

@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '@/app/store/slices/authSlice';
 
-const AdminNavbar = () => {
+const AdminNavbar = ({ isCollapsed, setIsCollapsed }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -16,6 +17,18 @@ const AdminNavbar = () => {
   // Prevent hydration mismatch by only rendering user data on client
   useEffect(() => {
     setIsClient(true);
+  }, []);
+
+  // Check mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   // Close dropdown when user state changes (e.g., after logout)
@@ -53,25 +66,38 @@ const AdminNavbar = () => {
     }
   };
 
+  const sidebarWidth = isCollapsed ? 60 : 250;
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm" 
          style={{ 
            position: 'fixed',
            top: 0,
            right: 0,
-           left: '250px',
+           left: isMobile ? '60px' : `${sidebarWidth}px`,
            zIndex: 999,
-           height: '60px'
+           height: '60px',
+           transition: 'left 0.3s ease'
          }}>
       
       <div className="container-fluid">
         <div className="d-flex align-items-center">
-          <h4 className="mb-0 text-dark">Dashboard</h4>
+          {/* Mobile menu toggle */}
+          <button 
+            className="btn btn-outline-secondary me-3 d-md-none"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            style={{ minWidth: '40px' }}
+          >
+            ☰
+          </button>
+          
+          <h4 className="mb-0 text-dark d-none d-sm-block">Dashboard</h4>
+          <h5 className="mb-0 text-dark d-block d-sm-none">Dashboard</h5>
         </div>
 
         <div className="d-flex align-items-center">
-          {/* Notifications */}
-          <div className="dropdown me-3">
+          {/* Notifications - hide on very small screens */}
+          <div className="dropdown me-2 me-md-3 d-none d-sm-block">
             <button 
               className="btn btn-outline-secondary position-relative"
               type="button"
@@ -98,7 +124,7 @@ const AdminNavbar = () => {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
               <span className="me-2">👤</span>
-              <span>{isClient ? (user?.username || user?.user?.username || '') : ''}</span>
+              <span className="d-none d-sm-inline">{isClient ? (user?.username || user?.user?.username || '') : ''}</span>
             </button>
             
             {isDropdownOpen && (

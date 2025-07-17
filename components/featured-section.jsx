@@ -44,6 +44,7 @@ export default function FeaturedSection() {
                   height={400}
                   alt={project.title}
                   className="img-fluid w-100"
+                  style={{ maxWidth: '100%', height: 'auto' }}
                 />
                 <div className="featured-project-content">
                   <h3 className="h4 mb-3">{project.title}</h3>

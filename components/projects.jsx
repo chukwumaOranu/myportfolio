@@ -80,7 +80,8 @@ export default function Projects() {
                   width={600}
                   height={400}
                   alt={project.title}
-                  className="card-img-top"
+                  className="card-img-top img-fluid"
+                  style={{ maxWidth: '100%', height: 'auto' }}
                 />
                 <div className="card-body">
                   <h3 className="card-title h5">{project.title}</h3>
