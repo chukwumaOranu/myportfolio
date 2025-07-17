@@ -33,7 +33,7 @@ export default function SkillsPreview() {
         </div>
 
         <div className="text-center">
-          <Link href="/skills" className="btn btn-outline-primary">
+          <Link href="/main/skills" className="btn btn-outline-primary">
             View All Skills <i className="bi bi-arrow-right ms-2"></i>
           </Link>
         </div>
