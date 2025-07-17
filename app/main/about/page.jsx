@@ -34,10 +34,10 @@ export default function AboutPage() {
 
   const experiences = [
     {
-      title: "Full Stack aand Web Development Trainee",
+      title: "Full Stack and Web Development Trainee",
       company: "IT Career Switch United Kingdom",
       period: "2023 - 2024",
-      description: "Intense training and exposures to real life situations and projects. Ensuring consistency in Frontend and Backend usabilities",
+      description: "Over the past year, I have been training as a full-stack developer with IT Career Switch, gaining hands-on experience in both frontend and backend development.During this time, I’ve built and maintained dynamic web applications, developed RESTful APIs, and worked with relational databases to design scalable and secure backend systems. On the frontend, I’ve focused on building responsive, user-friendly interfaces using React. This experience has equipped me with a strong foundation in modern web development and a practical understanding of full-stack application architecture",
       technologies: ["React", "Node.js", "Express","React", "Vue", "MYSQL"],
       color: "primary"
     },
