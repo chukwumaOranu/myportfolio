@@ -34,6 +34,14 @@ export default function AboutPage() {
 
   const experiences = [
     {
+      title: "Full Stack aand Web Development Trainee",
+      company: "IT Career Switch United Kingdom",
+      period: "2023 - 2024",
+      description: "Intense training and exposures to real life situations and projects. Ensuring consistency in Frontend and Backend usabilities",
+      technologies: ["React", "Node.js", "Express","React", "Vue", "MYSQL"],
+      color: "primary"
+    },
+    {
       title: "Full Stack Developer",
       company: "DeepFlux Innovative Limited",
       period: "2018 - 2022 & Present Remote",
