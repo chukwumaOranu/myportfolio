@@ -33,6 +33,10 @@ server/
 # vercel
 .vercel
 
+seo-examples.js
+
+README-SEO.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
