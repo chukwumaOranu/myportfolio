@@ -4,21 +4,22 @@ import Skills from "@/components/skills-preview"
 import FeaturedProjects from "@/components/featured-projects"
 import Services from "@/components/services"
 import CallToAction from "@/components/call-to-action"
-import { NextSeo } from 'next-seo';
-import { pageSEOConfigs } from '@/utils/seo-config';
+import { generateMetadata, pageMetadata } from '@/utils/metadata';
+
+export const metadata = generateMetadata({
+  ...pageMetadata.home,
+  url: '/main/home'
+});
 
 export default function Home() {
   return (
-    <>
-      <NextSeo {...pageSEOConfigs.home} />
-      <main>
-        <Hero />
-        <About />
-        <Skills />
-        <Services />
-        <FeaturedProjects />
-        <CallToAction />
-      </main>
-    </>
+    <main>
+      <Hero />
+      <About />
+      <Skills />
+      <Services />
+      <FeaturedProjects />
+      <CallToAction />
+    </main>
   )
 }
