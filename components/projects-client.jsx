@@ -212,7 +212,7 @@ export default function ProjectsClient() {
                               </span>
                             ))}
                           </div>
-                          <Link href={`/main/projects/${project.slug}`} className="btn btn-primary">
+                          <Link href={project.slug} className="btn btn-primary">
                             View Project <i className="bi bi-arrow-right ms-2"></i>
                           </Link>
                         </div>
