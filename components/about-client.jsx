@@ -42,7 +42,7 @@ export default function AboutClient() {
       color: "primary"
     },
     {
-      title: "Full Stack Developer",
+      title: "Supervisor & Full Stack Developer",
       company: "DeepFlux Innovative Limited",
       period: "2018 - 2022 & Present Remote",
       description: "Led end-to-end development of enterprise-grade web applications serving thousands of users. Architected scalable solutions using modern tech stack, implemented CI/CD pipelines, and mentored junior developers. Delivered 15+ high-impact projects with 99.9% uptime and 40% performance improvements.",
